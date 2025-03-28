@@ -7,7 +7,7 @@ import re
 import time
 import tkinter as tk
 import threading
-import keyboard  # For detecting keypress
+import keyboard  
 
 # Set Tesseract path (make sure this points to your tesseract.exe file, not just Tesseract-OCR)
 pytesseract.pytesseract.tesseract_cmd = r"c:\Users\12kal\Downloads\Tesseract-OCR\tesseract.exe"
