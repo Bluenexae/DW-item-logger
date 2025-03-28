@@ -9,10 +9,10 @@ import tkinter as tk
 import threading
 import keyboard  # For detecting keypress
 
-# Set Tesseract path (make sure this points to your Tesseract installation)
+# Set Tesseract path (make sure this points to your tesseract.exe file, not just Tesseract-OCR)
 pytesseract.pytesseract.tesseract_cmd = r"c:\Users\12kal\Downloads\Tesseract-OCR\tesseract.exe"
 
-# Log to store recognized items
+# Defining our categories for logging
 logged_items = {
     "Weapons": collections.Counter(),
     "Ammo": collections.Counter(),
@@ -21,26 +21,24 @@ logged_items = {
     "Traps/Nades": collections.Counter()
 }
 
-# Undo and Redo stacks
+# Undo and Redo stacks, still implementing.
 undo_stack = []
 redo_stack = []
 
 # Enable/Disable toggle
 logging_enabled = True
 
-# Fix text function to clean up recognized text
+# Fix text function to clean up recognized text, Need to work on further as tesseract sometimes returns letters incorrectly
 def fix_text(text):
     cleaned_text = text.strip()  # Remove leading and trailing spaces
     cleaned_text = re.sub(r'[^A-Za-z0-9\s]', '', cleaned_text)  # Remove non-alphanumeric characters except spaces
     return cleaned_text
 
-# Function to capture a screenshot and extract text
+# Capturing and converting text 
 def extract_text_from_screenshot():
     screenshot = pyautogui.screenshot(region=(860, 561, 198, 18))  # top_left (860, 561), bottom_right (1058, 579)
     screenshot_np = np.array(screenshot)
     screenshot_gray = cv2.cvtColor(screenshot_np, cv2.COLOR_RGB2GRAY)
-    
-    # Run OCR
     extracted_text = pytesseract.image_to_string(screenshot_gray)
     return extracted_text
 
@@ -93,7 +91,7 @@ def redo():
             # Save the redo action to the undo stack
             undo_stack.append(('add', category, item))
 
-# Function to listen for the "e" key press and trigger logging
+# Tesseract and ss capture function call
 def listen_for_key():
     while True:
         if keyboard.is_pressed("e"):  # When the 'e' key is pressed
@@ -101,7 +99,7 @@ def listen_for_key():
             log_text()
             time.sleep(1)  # Add a slight delay to prevent multiple rapid presses
 
-# Transparent GUI for organizing logged items
+# GUI
 def create_gui():
     root = tk.Tk()
     root.title("Item Logger")
@@ -110,7 +108,7 @@ def create_gui():
     root.attributes("-topmost", True)  # Keep it above other windows
     root.attributes("-transparentcolor", "black")  # Make the background transparent
     
-    # Add sections for organizing logged items
+    # Categories
     weapons_label = tk.Label(root, text="Weapons", bg="black", fg="white", font=("Arial", 14))
     weapons_label.pack()
     
@@ -126,7 +124,7 @@ def create_gui():
     traps_label = tk.Label(root, text="Traps/Nades", bg="black", fg="white", font=("Arial", 14))
     traps_label.pack()
 
-    # Update the GUI with logged items
+    # Updating the GUI
     def update_gui():
         weapons_label.config(text="Weapons: " + ", ".join([f"{item} {count}x" for item, count in logged_items["Weapons"].items()]))
         ammo_label.config(text="Ammo: " + ", ".join([f"{item} {count}x" for item, count in logged_items["Ammo"].items()]))
