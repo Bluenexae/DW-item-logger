@@ -55,7 +55,7 @@ def log_text():
     corrected_text = fix_text(extracted_text).strip()
 
     # Discard certain items (e.g., "Crate", "Locker", "Knife")
-    if corrected_text not in ["Crate", "Locker", "Knife"]:
+    if corrected_text not in ["Crate", "Locker", "Knife", "Double Locker"]:
         print(f"Logged text: {corrected_text}")
 
         # Choose category based on text, add to counter
